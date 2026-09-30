@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — PocketSmart AI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Welcome back, {{ user.username }} 👋</h1>
+  <p>Here's a snapshot of your planning activity.</p>
+</div>
+
+<div class="stat-grid">
+  <a href="/planners/home" class="card stat-card">
+    <span class="stat-num">{{ recent | selectattr("planner_type", "equalto", "home") | list | length }}</span>
+    <span class="stat-label">Home plans</span>
+  </a>
+  <a href="/planners/party" class="card stat-card">
+    <span class="stat-num">{{ recent | selectattr("planner_type", "equalto", "party") | list | length }}</span>
+    <span class="stat-label">Party plans</span>
+  </a>
+  <a href="/planners/jewelry" class="card stat-card">
+    <span class="stat-num">{{ recent | selectattr("planner_type", "equalto", "jewelry") | list | length }}</span>
+    <span class="stat-label">Jewelry plans</span>
+  </a>
+  <a href="/history" class="card stat-card">
+    <span class="stat-num">{{ recent | length }}</span>
+    <span class="stat-label">Recent plans</span>
+  </a>
+</div>
+
+<div class="section">
+  <div class="section-head">
+    <h2>Quick actions</h2>
+  </div>
+  <div class="card-grid">
+    <a href="/planners/home" class="card planner-card">
+      <div class="card-icon">🏠</div>
+      <h3>Home Interior</h3>
+      <p>Plan rooms, furniture and decor within your budget.</p>
+    </a>
+    <a href="/planners/party" class="card planner-card">
+      <div class="card-icon">🎉</div>
+      <h3>Party Budget</h3>
+      <p>Catering, decor, entertainment and venue in one plan.</p>
+    </a>
+    <a href="/planners/jewelry" class="card planner-card">
+      <div class="card-icon">💎</div>
+      <h3>Jewelry</h3>
+      <p>Coordinated jewelry picks, with optional outfit analysis.</p>
+    </a>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-head">
+    <h2>Recent plans</h2>
+    <a href="/history" class="btn btn-outline btn-sm">View all</a>
+  </div>
+  {% if recent %}
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr><th>Plan</th><th>Type</th><th>Budget</th><th>Created</th><th></th></tr>
+        </thead>
+        <tbody>
+          {% for item in recent %}
+          <tr>
+            <td>{{ item.title }}</td>
+            <td><span class="badge badge-{{ item.planner_type }}">{{ item.planner_type }}</span></td>
+            <td>₹{{ "{:,.0f}".format(item.budget) }}</td>
+            <td>{{ item.created_at.strftime("%d %b %Y") }}</td>
+            <td><a href="/results/{{ item.id }}" class="btn btn-outline btn-sm">View</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">📋</div>
+      <h3>No plans yet</h3>
+      <p>Generate your first plan and it will show up here.</p>
+      <a href="/planners/home" class="btn btn-primary">Create a plan</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

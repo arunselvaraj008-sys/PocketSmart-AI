@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}PocketSmart AI — Smart Budget & Recommendation Assistant{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="hero-inner">
+    <span class="hero-badge">Budget-aware AI recommendations</span>
+    <h1>Plan smarter. <span class="gradient-text">Spend wiser.</span></h1>
+    <p class="hero-sub">
+      PocketSmart AI turns your budget into practical, shoppable plans for your home,
+      parties and jewelry — with realistic picks from Amazon, Flipkart, IKEA, Swiggy,
+      Zomato, OYO and more.
+    </p>
+    <div class="hero-actions">
+      <a href="/register" class="btn btn-primary btn-lg">Start Planning Free</a>
+      <a href="/testimonials" class="btn btn-outline btn-lg">See What Users Say</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><strong>3</strong><span>Smart planners</span></div>
+      <div class="stat"><strong>100+</strong><span>Curated picks</span></div>
+      <div class="stat"><strong>10%</strong><span>Contingency reserve</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">Three planners, one goal</h2>
+  <p class="section-sub">Every plan respects your budget and holds back a contingency reserve.</p>
+  <div class="card-grid">
+    <a href="/planners/home" class="card planner-card">
+      <div class="card-icon">🏠</div>
+      <h3>Home Interior Planner</h3>
+      <p>Set a budget, list your rooms and style, and get a room-by-room allocation with lights, fans, tables, sofas and decor.</p>
+      <span class="card-cta">Plan your home →</span>
+    </a>
+    <a href="/planners/party" class="card planner-card">
+      <div class="card-icon">🎉</div>
+      <h3>Party Budget Planner</h3>
+      <p>Tell us the guest count and event type — get catering, decor, entertainment and venue plans that fit your budget.</p>
+      <span class="card-cta">Plan your party →</span>
+    </a>
+    <a href="/planners/jewelry" class="card planner-card">
+      <div class="card-icon">💎</div>
+      <h3>Jewelry Budget Planner</h3>
+      <p>Upload an outfit photo and get coordinated jewelry suggestions matched to your occasion, style and budget.</p>
+      <span class="card-cta">Plan your look →</span>
+    </a>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <h2 class="section-title">Why PocketSmart AI?</h2>
+  <div class="card-grid">
+    <div class="card feature-card">
+      <div class="card-icon">🎯</div>
+      <h3>Budget-first</h3>
+      <p>Every plan shows total, allocated and remaining amounts — with warnings before you overspend.</p>
+    </div>
+    <div class="card feature-card">
+      <div class="card-icon">🛡️</div>
+      <h3>Contingency built in</h3>
+      <p>A configurable reserve is held back on every plan so surprises never blow your budget.</p>
+    </div>
+    <div class="card feature-card">
+      <div class="card-icon">🔒</div>
+      <h3>Private by design</h3>
+      <p>Your plans are saved to your own account and visible only to you.</p>
+    </div>
+    <div class="card feature-card">
+      <div class="card-icon">✨</div>
+      <h3>Demo mode ready</h3>
+      <p>Runs fully without an API key using high-quality deterministic mock recommendations.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section cta-section">
+  <h2>Ready to plan your next purchase?</h2>
+  <p>Create a free account to save and reuse your plans.</p>
+  <a href="/register" class="btn btn-primary btn-lg">Create Free Account</a>
+</section>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}History — PocketSmart AI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Recommendation History</h1>
+  <p>Every plan you've generated, saved to your account.</p>
+</div>
+
+{% if items %}
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr><th>Plan</th><th>Type</th><th>Budget</th><th>Created</th><th class="table-actions">Actions</th></tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td>{{ item.title }}</td>
+          <td><span class="badge badge-{{ item.planner_type }}">{{ item.planner_type }}</span></td>
+          <td>₹{{ "{:,.0f}".format(item.budget) }}</td>
+          <td>{{ item.created_at.strftime("%d %b %Y") }}</td>
+          <td class="table-actions">
+            <a href="/results/{{ item.id }}" class="btn btn-outline btn-sm">View</a>
+            <button class="btn btn-danger btn-sm" data-delete-id="{{ item.id }}" type="button">Delete</button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="empty-state">
+    <div class="empty-icon">🗂️</div>
+    <h3>No history yet</h3>
+    <p>Generate a plan and it will be saved here automatically.</p>
+    <a href="/planners/home" class="btn btn-primary">Create your first plan</a>
+  </div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.querySelectorAll("[data-delete-id]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const id = btn.getAttribute("data-delete-id");
+      if (!confirm("Delete this plan? This cannot be undone.")) return;
+      btn.disabled = true;
+      try {
+        const res = await fetch(`/api/history/${id}`, { method: "DELETE" });
+        if (!res.ok) throw new Error("Delete failed");
+        showFlash("Plan deleted.", "success");
+        setTimeout(() => window.location.reload(), 600);
+      } catch (e) {
+        showFlash("Could not delete the plan.", "error");
+        btn.disabled = false;
+      }
+    });
+  });
+</script>
+{% endblock %}

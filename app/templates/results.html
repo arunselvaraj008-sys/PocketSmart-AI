@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Plan Results — PocketSmart AI{% endblock %}
+
+{% block content %}
+{% set p = plan.payload %}
+<div class="page-header">
+  <div class="results-head">
+    <div>
+      <h1>{{ p.title }}</h1>
+      <p class="results-meta">
+        <span class="badge badge-{{ p.planner_type }}">{{ p.planner_type }}</span>
+        {% if p.source == "gemini" %}
+          <span class="badge badge-gemini">✨ AI-enhanced</span>
+        {% else %}
+          <span class="badge badge-demo">Demo recommendations</span>
+        {% endif %}
+        <span class="results-date">Generated {{ plan.created_at.strftime("%d %b %Y, %H:%M") }}</span>
+      </p>
+    </div>
+    <div class="results-actions">
+      <a href="/history" class="btn btn-outline btn-sm">Back to history</a>
+      <button class="btn btn-outline btn-sm" id="reuseBtn" type="button">Save a copy</button>
+    </div>
+  </div>
+</div>
+
+{% if p.warnings %}
+  <div class="alert alert-warning">
+    <strong>⚠ Budget warning:</strong>
+    <ul>{% for w in p.warnings %}<li>{{ w }}</li>{% endfor %}</ul>
+  </div>
+{% endif %}
+
+<div class="budget-summary">
+  <div class="budget-card">
+    <span class="budget-label">Total budget</span>
+    <span class="budget-value">₹{{ "{:,.0f}".format(p.budget) }}</span>
+  </div>
+  <div class="budget-card">
+    <span class="budget-label">Allocated</span>
+    <span class="budget-value">₹{{ "{:,.0f}".format(p.allocated) }}</span>
+  </div>
+  <div class="budget-card">
+    <span class="budget-label">Contingency ({{ p.contingency_percent | int }}%)</span>
+    <span class="budget-value">₹{{ "{:,.0f}".format(p.contingency_amount) }}</span>
+  </div>
+  <div class="budget-card {% if p.remaining < 0 %}budget-danger{% elif p.remaining < p.budget * 0.05 %}budget-warn{% endif %}">
+    <span class="budget-label">Remaining</span>
+    <span class="budget-value">₹{{ "{:,.0f}".format(p.remaining) }}</span>
+  </div>
+</div>
+
+{% if p.notes %}
+  <div class="alert alert-info">
+    <strong>AI styling notes:</strong> {{ p.notes }}
+  </div>
+{% endif %}
+
+{% for cat in p.categories %}
+  <section class="result-category">
+    <div class="category-head">
+      <h2>{{ cat.category }}</h2>
+      <span class="category-subtotal">Subtotal: ₹{{ "{:,.0f}".format(cat.subtotal) }}</span>
+    </div>
+    <div class="card-grid">
+      {% for item in cat["items"] %}
+        <div class="card rec-card">
+          <div class="rec-top">
+            <span class="badge badge-platform">{{ item.platform }}</span>
+          </div>
+          <h3 class="rec-name">{{ item.name }}</h3>
+          <p class="rec-reason">{{ item.reason }}</p>
+          <div class="rec-footer">
+            <span class="rec-price">₹{{ "{:,.0f}".format(item.price) }}</span>
+            <a href="{{ item.url }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">View on {{ item.platform }} ↗</a>
+          </div>
+          <small class="rec-sim">Simulated link for demonstration</small>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+{% endfor %}
+
+<div class="results-footnote">
+  <p>Prices are estimates for planning purposes and may differ from live listings. All external links are simulated.</p>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.getElementById("reuseBtn").addEventListener("click", async () => {
+    const btn = document.getElementById("reuseBtn");
+    btn.disabled = true;
+    try {
+      const res = await fetch("/api/history/{{ plan.id }}");
+      const item = await res.json();
+      showFlash("Plan is already saved in your history.", "success");
+    } catch (e) {
+      showFlash("Could not access this plan.", "error");
+    } finally {
+      btn.disabled = false;
+    }
+  });
+</script>
+{% endblock %}

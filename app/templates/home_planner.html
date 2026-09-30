@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Home Interior Planner — PocketSmart AI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>🏠 Home Interior Planner</h1>
+  <p>Tell us your budget, rooms and style — we'll build a room-by-room plan.</p>
+</div>
+
+<div class="card form-card">
+  <div class="form-error" id="formError" hidden></div>
+  <form id="homeForm" class="form" novalidate>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="budget">Total budget (₹) *</label>
+        <input type="number" id="budget" name="budget" required min="1" step="100" placeholder="e.g. 50000" />
+      </div>
+      <div class="form-group">
+        <label for="style">Style preference *</label>
+        <select id="style" name="style" required>
+          <option value="">Select a style</option>
+          <option>Modern</option>
+          <option>Minimalist</option>
+          <option>Scandinavian</option>
+          <option>Traditional</option>
+          <option>Bohemian</option>
+          <option>Industrial</option>
+          <option>Contemporary</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="rooms">Rooms * <small class="form-hint">(comma-separated, e.g. living room, bedroom, kitchen)</small></label>
+      <input type="text" id="rooms" name="rooms" required placeholder="living room, bedroom, kitchen" />
+    </div>
+
+    <fieldset class="form-fieldset">
+      <legend>Quantities (optional)</legend>
+      <div class="form-row form-row-4">
+        <div class="form-group">
+          <label for="lights">Lights</label>
+          <input type="number" id="lights" name="lights" min="0" value="0" />
+        </div>
+        <div class="form-group">
+          <label for="fans">Fans</label>
+          <input type="number" id="fans" name="fans" min="0" value="0" />
+        </div>
+        <div class="form-group">
+          <label for="tables">Tables</label>
+          <input type="number" id="tables" name="tables" min="0" value="0" />
+        </div>
+        <div class="form-group">
+          <label for="sofas">Sofas</label>
+          <input type="number" id="sofas" name="sofas" min="0" value="0" />
+        </div>
+        <div class="form-group">
+          <label for="decor">Decor items</label>
+          <input type="number" id="decor" name="decor" min="0" value="0" />
+        </div>
+      </div>
+    </fieldset>
+
+    <button type="submit" class="btn btn-primary btn-block" id="submitBtn">
+      <span class="btn-label">Generate Home Plan</span>
+      <span class="spinner" hidden></span>
+    </button>
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  initPlannerForm({
+    formId: "homeForm",
+    errorId: "formError",
+    submitBtnId: "submitBtn",
+    apiUrl: "/api/planners/home",
+    buildPayload: (fd) => ({
+      budget: parseFloat(fd.get("budget")),
+      style: fd.get("style"),
+      rooms: fd.get("rooms").split(",").map((s) => s.trim()).filter(Boolean),
+      quantities: {
+        lights: parseInt(fd.get("lights") || "0", 10),
+        fans: parseInt(fd.get("fans") || "0", 10),
+        tables: parseInt(fd.get("tables") || "0", 10),
+        sofas: parseInt(fd.get("sofas") || "0", 10),
+        decor: parseInt(fd.get("decor") || "0", 10),
+      },
+    }),
+  });
+</script>
+{% endblock %}

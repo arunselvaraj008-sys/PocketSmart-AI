@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Jewelry Budget Planner — PocketSmart AI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>💎 Jewelry Budget Planner</h1>
+  <p>Get coordinated jewelry picks — optionally upload an outfit for AI styling advice.</p>
+</div>
+
+<div class="card form-card">
+  <div class="form-error" id="formError" hidden></div>
+  <form id="jewelryForm" class="form" enctype="multipart/form-data" novalidate>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="budget">Total budget (₹) *</label>
+        <input type="number" id="budget" name="budget" required min="1" step="100" placeholder="e.g. 15000" />
+      </div>
+      <div class="form-group">
+        <label for="occasion">Occasion *</label>
+        <select id="occasion" name="occasion" required>
+          <option value="">Select an occasion</option>
+          <option>Wedding</option>
+          <option>Party</option>
+          <option>Festival</option>
+          <option>Office</option>
+          <option>Daily Wear</option>
+          <option>Anniversary</option>
+          <option>Engagement</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="jewelry_type">Jewelry type *</label>
+        <select id="jewelry_type" name="jewelry_type" required>
+          <option value="">Select a type</option>
+          <option>Earrings</option>
+          <option>Necklace</option>
+          <option>Bracelet</option>
+          <option>Ring</option>
+          <option>Bangles</option>
+          <option>Bridal Set</option>
+          <option>Daily Wear</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="style_preference">Style preference *</label>
+        <select id="style_preference" name="style_preference" required>
+          <option value="">Select a style</option>
+          <option>Traditional</option>
+          <option>Modern</option>
+          <option>Minimalist</option>
+          <option>Statement</option>
+          <option>Vintage</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="outfit_image">Outfit image (optional)</label>
+      <input type="file" id="outfit_image" name="outfit_image" accept="image/png,image/jpeg,image/webp" />
+      <small class="form-hint">PNG, JPG or WEBP · max 5 MB · analyzed only when Gemini is configured.</small>
+      <div class="image-preview" id="imagePreview" hidden>
+        <img id="imagePreviewImg" alt="Outfit preview" />
+        <button type="button" class="btn btn-outline btn-sm" id="removeImage">Remove</button>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-block" id="submitBtn">
+      <span class="btn-label">Generate Jewelry Plan</span>
+      <span class="spinner" hidden></span>
+    </button>
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  initJewelryForm();
+</script>
+{% endblock %}
